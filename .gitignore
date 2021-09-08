@@ -1,0 +1,12 @@
+venv
+env/
+__pycache__/
+*.so
+.env
+.development_env
+dist/
+build/
+.eggs/
+*.egg-info/
+nltk_data/
+#.db - Intentionally leaving the db file, normally I wouldn't add it to the repo.
