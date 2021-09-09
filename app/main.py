@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request
 from flask.helpers import make_response
-from flask.templating import render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
