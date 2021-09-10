@@ -1,18 +1,18 @@
-
 import datetime
 from random import choice, randint
 
 from celery import Celery
 
-from main import app
+from main import app, db
 from models import Contact, ContactSchema
+from config import ENV_CONFIG_FILE
 
 
 def make_celery(app):
     celery = Celery(
         app.import_name,
-        backend=app.config['result_backend'],
-        broker=app.config['broker_url']
+        backend=app.config["result_backend"],
+        broker=app.config["broker_url"],
     )
     celery.conf.update(app.config)
 
@@ -24,14 +24,17 @@ def make_celery(app):
     celery.Task = ContextTask
     return celery
 
+
 app.config.update(
-    broker_url="redis://localhost:6379", result_backend="redis://localhost:6379"
+    broker_url=ENV_CONFIG_FILE["CELERY_BROKER_URL"],
+    result_backend=ENV_CONFIG_FILE["CELERY_RESULT_BACKEND"],
 )
 celery = make_celery(app)
 
 
 @celery.task(name="task.create_random_contact")
 def create_random_contact():
+    """Create a random contact"""
     names = [
         ("Ivan", "Gerov"),
         ("Baki", "Hamna"),
@@ -47,22 +50,26 @@ def create_random_contact():
     contact_schema = ContactSchema()
     contact = contact_schema.load(new_contact).create()
     print(contact_schema.dump(contact))
-    since = datetime.datetime.now() - datetime.timedelta(minutes=1)
-    contacts = Contact.query.filter(Contact.created_at > since).all()
-    if contacts:
-        print(contacts)
 
 
 @celery.task(name="task.remove_older_than_1_min")
 def remove_old_contact():
+    """Remove all contacts older than 1 minute"""
     since = datetime.datetime.now() - datetime.timedelta(minutes=1)
-    Contact.query.filter(Contact.created_at > since)
-    import pdb; pdb.set_trace()
+    old_contacts = Contact.query.filter(Contact.created_at < since).all()
+    for contact in old_contacts:
+        db.session.delete(contact)
+        db.session.commit()
+        print(f"Deleted: {contact}")
 
 
 celery.conf.beat_schedule = {
     "create-contact-15-seconds": {
         "task": "task.create_random_contact",
         "schedule": 15.0,
+    },
+    "remove-contacts-older-than-1-min": {
+        "task": "task.remove_older_than_1_min",
+        "schedule": 30.0,
     },
 }

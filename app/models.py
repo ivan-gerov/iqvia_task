@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, post_load
 from sqlalchemy.sql import func
@@ -9,7 +10,7 @@ class Contact(db.Model):
 
     __tablename__ = "contact"
     id = db.Column(db.Integer, primary_key=True)
-    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    created_at = db.Column(db.DateTime, default=datetime.now())
     username = db.Column(db.String(255))
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
@@ -34,7 +35,7 @@ class Email(db.Model):
 
     __tablename__ = "emails"
     id = db.Column(db.Integer, primary_key=True)
-    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    created_at = db.Column(db.DateTime, default=datetime.now())
     address = db.Column(db.String(120), nullable=False)
     contact_id = db.Column(db.Integer, db.ForeignKey("contact.id"), nullable=False)
 
