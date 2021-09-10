@@ -10,3 +10,4 @@ build/
 *.egg-info/
 nltk_data/
 #.db - Intentionally leaving the db file, normally I wouldn't add it to the repo.
+celerybeat-schedule
