@@ -3,9 +3,9 @@ from random import choice, randint
 
 from celery import Celery
 
+from config import ENV_CONFIG_FILE
 from main import app, db
 from models import Contact, ContactSchema
-from config import ENV_CONFIG_FILE
 
 
 def make_celery(app):

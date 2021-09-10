@@ -1,9 +1,10 @@
 from datetime import datetime
+
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, fields, post_load
-from sqlalchemy.sql import func
 
 db = SQLAlchemy()
+
 
 class Contact(db.Model):
     """Contact model"""
@@ -45,7 +46,6 @@ class Email(db.Model):
         return self
 
     def __init__(self, address):
-        print("Making a new contact")
         self.address = address
 
     def __repr__(self):
@@ -77,4 +77,3 @@ class ContactSchema(Schema):
     @post_load
     def make_contact(self, data, **kwargs):
         return Contact(**data)
-

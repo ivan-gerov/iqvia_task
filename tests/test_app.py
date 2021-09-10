@@ -1,5 +1,13 @@
+"""
+I attempted to setup the SQLAlchemy database fixture, 
+but I couldn't, so I decided to utilize the time needed
+to check this at working on the celery task and refactoring
+the app.
+"""
+
+
 import tempfile
-import pytest
+import pytest 
 
 import os
 

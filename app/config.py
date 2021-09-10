@@ -1,4 +1,5 @@
 import os
+
 from dotenv import dotenv_values
 
 WORKSPACE_ROOT = os.path.sep.join(os.getenv("VIRTUAL_ENV").split("/")[:-1])
@@ -19,7 +20,6 @@ class DevelopmentConfig(Config):
 
     SQLALCHEMY_DATABASE_URI = ENV_CONFIG_FILE["DATABASE_URL"]
     ENV = ENV_CONFIG_FILE["ENV"]
-    
 
 
 class TestingConfig(Config):
